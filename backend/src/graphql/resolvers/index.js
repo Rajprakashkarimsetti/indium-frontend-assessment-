@@ -1,11 +1,12 @@
-// src/graphql/resolvers/index.js
 const authResolvers = require('./authResolvers');
 const transactionResolvers = require('./transactionResolvers');
+const financeResolvers = require('./financeResolvers');
 
 const resolvers = {
   Query: {
     ...authResolvers.Query,
     ...transactionResolvers.Query,
+    ...financeResolvers.Query,
   },
   Mutation: {
     ...authResolvers.Mutation,

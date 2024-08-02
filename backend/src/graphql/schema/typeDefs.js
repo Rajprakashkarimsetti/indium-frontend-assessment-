@@ -1,4 +1,3 @@
-// src/graphql/schema/typeDefs.js
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`

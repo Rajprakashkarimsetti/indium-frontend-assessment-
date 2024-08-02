@@ -1,9 +1,11 @@
-// src/graphql/resolvers/financeResolvers.js
-const transactions = require('../../data/transactions.json');
+const { getAllTransactions } = require('../../data/inMemoryDB');
 
 const financeResolvers = {
   Query: {
     financeSummary: () => {
+      const transactions = getAllTransactions();
+      console.log('Retrieved transactions for summary:', transactions); // Debug log
+
       let totalIncome = 0;
       let totalExpenses = 0;
 
