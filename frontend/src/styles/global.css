@@ -161,3 +161,71 @@ html, body {
   list-style-type: none;
   padding: 0;
 }
+
+
+/* src/styles/global.css */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.dashboard-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.dashboard-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.dashboard-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.dashboard-button:hover {
+  background-color: #0056b3;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.dashboard-stats,
+.dashboard-categories {
+  margin-bottom: 20px;
+}
+
+.dashboard-stats p,
+.dashboard-categories ul {
+  margin: 5px 0;
+}
+
+.dashboard-categories ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.dashboard-categories ul li {
+  margin: 5px 0;
+}
