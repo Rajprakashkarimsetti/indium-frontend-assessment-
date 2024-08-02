@@ -1,24 +1,29 @@
 // src/graphql/resolvers/financeResolvers.js
+const transactions = require('../../data/transactions.json');
+
 const financeResolvers = {
   Query: {
-    getUser: (parent, args, context, info) => {
-      // Implementation
+    financeSummary: () => {
+      let totalIncome = 0;
+      let totalExpenses = 0;
+
+      transactions.forEach(transaction => {
+        if (transaction.amount > 0) {
+          totalIncome += transaction.amount;
+        } else {
+          totalExpenses += Math.abs(transaction.amount);
+        }
+      });
+
+      const balance = totalIncome - totalExpenses;
+
+      return {
+        totalIncome,
+        totalExpenses,
+        balance,
+      };
     },
-    getAllTransactions: (parent, args, context, info) => {
-      // Implementation
-    },
-    getTransactions: (parent, args, context, info) => {
-      // Implementation
-    }
   },
-  Mutation: {
-    createUser: (parent, args, context, info) => {
-      // Implementation
-    },
-    addTransaction: (parent, args, context, info) => {
-      // Implementation
-    }
-  }
 };
 
 module.exports = financeResolvers;

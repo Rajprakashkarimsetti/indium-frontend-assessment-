@@ -1,8 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
 // In-memory user store
 const users = [];
+
+// Replace 'your_jwt_secret' with an environment variable
+const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
 
 const authResolvers = {
   Mutation: {
@@ -22,14 +26,17 @@ const authResolvers = {
         users.push(user);
 
         // Generate token
-        const token = jwt.sign({ username }, 'your_jwt_secret', { expiresIn: '1h' });
+        const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+
+        // Exclude the password field from the response
+        const { password: _, ...userWithoutPassword } = user;
 
         return {
           token,
-          user
+          user: userWithoutPassword
         };
       } catch (error) {
-        throw new Error(error.message);
+        throw new Error(`Registration failed: ${error.message}`);
       }
     },
     login: async (_, { username, password }) => {
@@ -47,17 +54,36 @@ const authResolvers = {
         }
 
         // Generate token
-        const token = jwt.sign({ username }, 'your_jwt_secret', { expiresIn: '1h' });
+        const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '1h' });
+
+        // Exclude the password field from the response
+        const { password: _, ...userWithoutPassword } = user;
 
         return {
           token,
-          user
+          user: userWithoutPassword
         };
       } catch (error) {
-        throw new Error(error.message);
+        throw new Error(`Login failed: ${error.message}`);
       }
     }
   }
 };
 
-module.exports = authResolvers;
+const transactions = [];
+
+const saveTransaction = (transaction) => {
+  transactions.push(transaction);
+  return transaction;
+};
+
+const getAllTransactions = () => {
+  return transactions;
+};
+
+module.exports = {
+  saveTransaction,
+  getAllTransactions,
+  authResolvers
+};
+

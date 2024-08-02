@@ -5,6 +5,7 @@ const typeDefs = gql`
   type Query {
     getUser(id: ID!): User
     getAllTransactions: [Transaction]
+    financeSummary: FinanceSummary
   }
 
   type Mutation {
@@ -29,6 +30,12 @@ const typeDefs = gql`
     amount: Float!
     description: String!
     date: String!
+  }
+
+  type FinanceSummary {
+    totalIncome: Float
+    totalExpenses: Float
+    balance: Float
   }
 `;
 
