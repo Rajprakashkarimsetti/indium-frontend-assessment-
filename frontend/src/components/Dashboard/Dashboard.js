@@ -1,44 +1,35 @@
-// src/components/Dashboard/Dashboard.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import Summary from './Summary';
-import TransactionForm from './TransactionForm';
-import Transactions from './Transactions';
 import '../../styles/global.css'; // Import global styles
 import '../../styles/variables.css'; // Import variable styles
-import axios from 'axios';
+
+const GET_FINANCE_SUMMARY = gql`
+  query GetFinanceSummary {
+    financeSummary {
+      totalIncome
+      totalExpenses
+      balance
+    }
+  }
+`;
 
 const Dashboard = () => {
-  const [balance, setBalance] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [totalExpenses, setTotalExpenses] = useState(0);
-
+  const { data, loading, error } = useQuery(GET_FINANCE_SUMMARY);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Replace with your actual API endpoint
-        const response = await axios.get('/api/finance-summary');
-        setBalance(response.data.balance);
-        setTotalIncome(response.data.totalIncome);
-        setTotalExpenses(response.data.totalExpenses);
-      } catch (error) {
-        console.error('Error fetching finance data', error);
-      }
-    };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
-    fetchData();
-  }, []);
+  const { balance = 0, totalIncome = 0, totalExpenses = 0 } = data?.financeSummary || {};
 
   const handleLogout = () => {
-    // Clear any authentication tokens or session data here
     localStorage.removeItem('authToken');
     navigate('/login');
   };
 
   const handleAddTransaction = () => {
-    navigate('/transaction'); // Redirect to the transaction page
+    navigate('/transaction');
   };
 
   return (
@@ -53,19 +44,9 @@ const Dashboard = () => {
       <div className="dashboard-content">
         <h2 className="dashboard-title">Finance Dashboard</h2>
         <div className="dashboard-stats">
-          <p>Total Balance: ${balance}</p>
-          <p>Income: ${totalIncome}</p>
-          <p>Expenses: ${totalExpenses}</p>
-        </div>
-        <div className="dashboard-categories">
-          <h3>Categories:</h3>
-          <ul>
-            <li>Salary</li>
-            <li>Rent</li>
-            <li>Groceries</li>
-            <li>Utilities</li>
-            <li>Entertainment</li>
-          </ul>
+          <p>Total Balance: ${balance.toFixed(2)}</p>
+          <p>Income: ${totalIncome.toFixed(2)}</p>
+          <p>Expenses: ${totalExpenses.toFixed(2)}</p>
         </div>
       </div>
     </div>
