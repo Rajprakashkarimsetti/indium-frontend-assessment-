@@ -1,24 +1,27 @@
-const { transactions } = require('../../data/inMemoryDB');
+const { v4: uuidv4 } = require('uuid');
+const transactions = require('../../data/transactions.json');
+const inMemoryDB = require('../../data/inMemoryDB');
 
 const transactionResolvers = {
   Query: {
-    getTransactions: () => transactions,
-    getTransaction: (parent, { id }) => transactions.find(t => t.id === id),
+    getAllTransactions: () => {
+      return transactions;
+    },
   },
   Mutation: {
-    addTransaction: (parent, { title, category, amount, date }) => {
-      const newTransaction = { id: `${transactions.length + 1}`, title, category, amount, date };
+    createTransaction: (parent, { amount, description, date }, context) => {
+      const newTransaction = {
+        id: uuidv4(),
+        amount,
+        description,
+        date,
+      };
       transactions.push(newTransaction);
+      // If you want to save it in inMemoryDB
+      inMemoryDB.saveTransaction(newTransaction);
       return newTransaction;
     },
-    deleteTransaction: (parent, { id }) => {
-      const index = transactions.findIndex(t => t.id === id);
-      if (index === -1) {
-        throw new Error('Transaction not found');
-      }
-      return transactions.splice(index, 1)[0];
-    }
-  }
+  },
 };
 
 module.exports = transactionResolvers;
