@@ -1,7 +1,13 @@
+// src/graphql/resolvers/transactionResolvers.js
 const inMemoryDB = require('../../data/inMemoryDB');
 
-
 const resolvers = {
+    Query: {
+        getAllTransactions: async () => {
+            // Fetch all transactions from the in-memory database
+            return inMemoryDB.getTransactions();
+        }
+    },
     Mutation: {
         createTransaction: async (_, { amount, description, date }) => {
             const newTransaction = {
@@ -10,11 +16,9 @@ const resolvers = {
                 description,
                 date
             };
+            // Save the new transaction and return it
             return inMemoryDB.saveTransaction(newTransaction);
         }
-    },
-    Query: {
-        // Define other queries here
     }
 };
 

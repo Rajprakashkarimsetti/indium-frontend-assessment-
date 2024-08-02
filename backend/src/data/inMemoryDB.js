@@ -67,8 +67,14 @@ const getAllTransactions = () => {
   return transactions;
 };
 
+const getTransactions = () => {
+    return transactions;
+};
+
+
 module.exports = {
   saveTransaction,
   getAllTransactions,
-  authResolvers
+  authResolvers,
+  getTransactions
 };

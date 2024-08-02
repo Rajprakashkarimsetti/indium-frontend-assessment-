@@ -1,4 +1,7 @@
 const { gql } = require('apollo-server-express');
+const authTypes = require('./authTypes');
+const financeTypes = require('./financeTypes');
+const transactionTypes = require('./transactionTypes');
 
 const typeDefs = gql`
   type Query {

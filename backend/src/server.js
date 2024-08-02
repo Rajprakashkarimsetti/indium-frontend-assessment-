@@ -1,28 +1,29 @@
-const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./graphql/schema/typeDefs'); // Ensure this path is correct
 const resolvers = require('./graphql/resolvers'); // Ensure this path is correct
 
-const app = express();
-
-// Initialize Apollo Server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
-    // Optional: Add any context setup if needed, e.g., authentication
+    // Add context if needed
     return {};
-  },
-  // Enable playground for development purposes
-  playground: true,
-  // Enable introspection for development purposes
-  introspection: true,
+  }
 });
 
-// Apply middleware to the Express app
-server.applyMiddleware({ app });
+async function startServer() {
+  const app = express();
+  const httpServer = require('http').createServer(app);
 
-// Start the server
-app.listen({ port: 4000 }, () => {
-  console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
+  await server.start();
+  server.applyMiddleware({ app });
+
+  app.listen({ port: 4000 }, () =>
+    console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+  );
+}
+
+startServer().catch((err) => {
+  console.error(err);
 });

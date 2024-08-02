@@ -1,9 +1,11 @@
-// src/graphql/resolvers/index.js
-const { mergeResolvers } = require('@graphql-tools/merge');
-const authResolvers = require('./authResolvers');
-const transactionResolvers = require('./transactionResolvers');
-const financeResolvers = require('./financeResolvers');
+// src/index.js
+const express = require('express');
+const server = require('./graphql/index'); // Import Apollo Server setup
 
-const resolvers = mergeResolvers([authResolvers, transactionResolvers, financeResolvers]);
+const app = express();
+server.applyMiddleware({ app }); // Apply Apollo Server middleware
 
-module.exports = resolvers;
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}${server.graphqlPath}`);
+});

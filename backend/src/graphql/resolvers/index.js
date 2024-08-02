@@ -1,15 +1,16 @@
 const authResolvers = require('./authResolvers');
-const transactionResolvers = require('./transactionResolvers');
 const financeResolvers = require('./financeResolvers');
+const transactionResolvers = require('./transactionResolvers');
 
 const resolvers = {
   Query: {
     ...authResolvers.Query,
-    ...transactionResolvers.Query,
     ...financeResolvers.Query,
+    ...transactionResolvers.Query,
   },
   Mutation: {
     ...authResolvers.Mutation,
+    ...financeResolvers.Mutation,
     ...transactionResolvers.Mutation,
   },
 };
