@@ -39,6 +39,7 @@ const typeDefs = gql`
     totalIncome: Float
     totalExpenses: Float
     balance: Float
+    category: [String!]
   }
 `;
 

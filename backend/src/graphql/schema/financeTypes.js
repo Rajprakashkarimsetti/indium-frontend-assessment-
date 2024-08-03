@@ -15,7 +15,7 @@ const financeTypes = gql`
   }
 
   type Mutation {
-    addTransaction(title: String!, category: String!, amount: Float!, date: String!): Transaction!
+    addTransaction(title: String!, category: [String!]!, amount: Float!, date: String!): Transaction!
     deleteTransaction(id: ID!): Transaction!
   }
 `;

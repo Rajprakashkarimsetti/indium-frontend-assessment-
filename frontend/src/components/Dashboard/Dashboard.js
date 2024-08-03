@@ -11,6 +11,7 @@ const GET_FINANCE_SUMMARY = gql`
       totalIncome
       totalExpenses
       balance
+      category
     }
   }
 `;
@@ -23,7 +24,7 @@ const Dashboard = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const { balance = 0, totalIncome = 0, totalExpenses = 0 } = data?.financeSummary || {};
+  const { balance = 0, totalIncome = 0, totalExpenses = 0,category = [] } = data?.financeSummary || {};
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
@@ -53,6 +54,7 @@ const Dashboard = () => {
           <p>Total Balance: ${balance.toFixed(2)}</p>
           <p>Income: ${totalIncome.toFixed(2)}</p>
           <p>Expenses: ${totalExpenses.toFixed(2)}</p>
+          <p>category: {category.map(item=>item+" ")}</p>
         </div>
         <div className="dashboard-search">
           <input

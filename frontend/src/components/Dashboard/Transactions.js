@@ -10,7 +10,7 @@ const GET_ALL_TRANSACTIONS = gql`
       description
       amount
       date
-      category  # Added category field
+      category
     }
   }
 `;
@@ -21,19 +21,54 @@ const Transactions = () => {
   if (loading) return <p>Loading transactions...</p>;
   if (error) return <p>Error loading transactions: {error.message}</p>;
 
+  const handleEdit = (id) => {
+    // Implement edit functionality
+    console.log(`Edit transaction with id: ${id}`);
+  };
+
+  const handleDelete = (id) => {
+    // Implement delete functionality
+    console.log(`Delete transaction with id: ${id}`);
+  };
+
   return (
     <div className="transactions-list">
       <h2>Transaction List</h2>
-      <ul>
-        {data.getAllTransactions.map((transaction) => (
-          <li key={transaction.id}>
-            <p>Description: {transaction.description}</p>
-            <p>Amount: ${transaction.amount.toFixed(2)}</p>
-            <p>Date: {new Date(transaction.date).toLocaleDateString()}</p>
-            <p>Category: {transaction.category}</p>  {/* Display category */}
-          </li>
-        ))}
-      </ul>
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
+            <th style={{ padding: '30px', textAlign: 'left' }}>Description</th>
+            <th style={{ padding: '30px', textAlign: 'left' }}>Amount</th>
+            <th style={{ padding: '30px', textAlign: 'left' }}>Date</th>
+            <th style={{ padding: '30px', textAlign: 'left' }}>Category</th>
+            <th style={{ padding: '30px', textAlign: 'left' }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.getAllTransactions.map((transaction) => (
+            <tr key={transaction.id} style={{ borderBottom: '1px solid #ddd' }}>
+              <td style={{ padding: '10px' }}>{transaction.description}</td>
+              <td style={{ padding: '10px' }}>${transaction.amount.toFixed(2)}</td>
+              <td style={{ padding: '10px' }}>{new Date(transaction.date).toLocaleDateString()}</td>
+              <td style={{ padding: '10px' }}>{transaction.category}</td>
+              <td style={{ padding: '10px' }}>
+                <button
+                  style={{ marginRight: '10px', padding: '6px 10px', cursor: 'pointer' }}
+                  onClick={() => handleEdit(transaction.id)}
+                >
+                  Edit
+                </button>
+                <button
+                  style={{ padding: '6px 10px', cursor: 'pointer' }}
+                  onClick={() => handleDelete(transaction.id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

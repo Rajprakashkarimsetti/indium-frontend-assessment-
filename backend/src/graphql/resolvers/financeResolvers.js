@@ -8,21 +8,25 @@ const financeResolvers = {
 
       let totalIncome = 0;
       let totalExpenses = 0;
-
+      let category = new Set();
+      console.log(transactions)
+      
       transactions.forEach(transaction => {
         if (transaction.amount > 0) {
           totalIncome += transaction.amount;
         } else {
           totalExpenses += Math.abs(transaction.amount);
         }
+        category.add(transaction.category)
       });
 
       const balance = totalIncome - totalExpenses;
-
+      
       return {
         totalIncome,
         totalExpenses,
         balance,
+        category,
       };
     },
   },
