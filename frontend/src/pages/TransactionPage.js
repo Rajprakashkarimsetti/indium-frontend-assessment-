@@ -7,7 +7,6 @@ const TransactionPage = () => {
 
   const handleSave = () => {
     // Add your save functionality here
-    alert('Transaction saved!');
     navigate('/dashboard'); // Redirect to dashboard after saving
   };
 

@@ -1,74 +1,89 @@
+// src/components/Dashboard/Transactions.js
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
-import '../../styles/global.css'; // Import global styles
-import '../../styles/variables.css'; // Import variable styles
 
-const GET_ALL_TRANSACTIONS = gql`
-  query GetAllTransactions {
-    getAllTransactions {
-      id
-      description
-      amount
-      date
-      category
-    }
-  }
-`;
+const tableStyles = {
+  width: '100%',
+  borderCollapse: 'collapse',
+  margin: '20px 0',
+};
 
-const Transactions = () => {
-  const { data, loading, error } = useQuery(GET_ALL_TRANSACTIONS);
+const thStyles = {
+  textAlign: 'left',
+  padding: '12px 15px',
+  borderBottom: '2px solid #ddd',
+  backgroundColor: '#f2f2f2',
+  fontWeight: 'bold',
+};
 
-  if (loading) return <p>Loading transactions...</p>;
-  if (error) return <p>Error loading transactions: {error.message}</p>;
+const tdStyles = {
+  padding: '12px 15px',
+  borderBottom: '1px solid #ddd',
+  verticalAlign: 'top',
+};
 
-  const handleEdit = (id) => {
-    // Implement edit functionality
-    console.log(`Edit transaction with id: ${id}`);
-  };
+const buttonStyles = {
+  border: 'none',
+  padding: '8px 12px',
+  margin: '0 4px',
+  cursor: 'pointer',
+  borderRadius: '4px',
+};
 
-  const handleDelete = (id) => {
-    // Implement delete functionality
-    console.log(`Delete transaction with id: ${id}`);
-  };
+const editButtonStyles = {
+  ...buttonStyles,
+  backgroundColor: '#4CAF50', // Green
+  color: 'white',
+};
 
+const deleteButtonStyles = {
+  ...buttonStyles,
+  backgroundColor: '#f44336', // Red
+  color: 'white',
+};
+
+const Transactions = ({ transactions, onEdit, onDelete }) => {
   return (
     <div className="transactions-list">
-      <h2>Transaction List</h2>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
-            <th style={{ padding: '30px', textAlign: 'left' }}>Description</th>
-            <th style={{ padding: '30px', textAlign: 'left' }}>Amount</th>
-            <th style={{ padding: '30px', textAlign: 'left' }}>Date</th>
-            <th style={{ padding: '30px', textAlign: 'left' }}>Category</th>
-            <th style={{ padding: '30px', textAlign: 'left' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.getAllTransactions.map((transaction) => (
-            <tr key={transaction.id} style={{ borderBottom: '1px solid #ddd' }}>
-              <td style={{ padding: '10px' }}>{transaction.description}</td>
-              <td style={{ padding: '10px' }}>${transaction.amount.toFixed(2)}</td>
-              <td style={{ padding: '10px' }}>{new Date(transaction.date).toLocaleDateString()}</td>
-              <td style={{ padding: '10px' }}>{transaction.category}</td>
-              <td style={{ padding: '10px' }}>
-                <button
-                  style={{ marginRight: '10px', padding: '6px 10px', cursor: 'pointer' }}
-                  onClick={() => handleEdit(transaction.id)}
-                >
-                  Edit
-                </button>
-                <button
-                  style={{ padding: '6px 10px', cursor: 'pointer' }}
-                  onClick={() => handleDelete(transaction.id)}
-                >
-                  Delete
-                </button>
-              </td>
+      <h3>Transaction List</h3>
+      {transactions.length === 0 ? (
+        <p>No transactions found.</p>
+      ) : (
+        <table style={tableStyles}>
+          <thead>
+            <tr>
+              <th style={thStyles}>Description</th>
+              <th style={thStyles}>Amount</th>
+              <th style={thStyles}>Date</th>
+              <th style={thStyles}>Category</th>
+              <th style={thStyles}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map(transaction => (
+              <tr key={transaction.id}>
+                <td style={tdStyles}>{transaction.description}</td>
+                <td style={tdStyles}>${transaction.amount.toFixed(2)}</td>
+                <td style={tdStyles}>{transaction.date}</td>
+                <td style={tdStyles}>{transaction.category}</td>
+                <td style={tdStyles}>
+                  <button
+                    style={editButtonStyles}
+                    onClick={() => onEdit(transaction.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    style={deleteButtonStyles}
+                    onClick={() => onDelete(transaction.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

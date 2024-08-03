@@ -42,8 +42,7 @@ const TransactionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await createTransaction({
+         await createTransaction({
         variables: {
           amount: parseFloat(amount),
           description,
@@ -53,10 +52,6 @@ const TransactionForm = () => {
       });
       alert('Transaction added successfully!');
       navigate('/dashboard');
-    } catch (err) {
-      console.error('Error adding transaction:', err);
-      alert('Error adding transaction.');
-    }
   };
 
   return (
@@ -98,7 +93,7 @@ const TransactionForm = () => {
           required
         />
       </div>
-      <button type="submit" disabled={loading}>Add Transaction</button>
+      <button type="submit" disabled={loading}>Save</button>
       {error && <p>Error adding transaction: {error.message}</p>}
     </form>
   );

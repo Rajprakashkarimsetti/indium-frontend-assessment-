@@ -1,7 +1,8 @@
+// src/components/Dashboard/Dashboard.js
 import React, { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client'; // Import useMutation
 import { useNavigate } from 'react-router-dom';
-import Transactions from './Transactions';
+import Transactions from './Transactions'; // Ensure the path is correct
 import '../../styles/global.css'; // Import global styles
 import '../../styles/variables.css'; // Import variable styles
 
@@ -13,18 +14,37 @@ const GET_FINANCE_SUMMARY = gql`
       balance
       category
     }
+    getAllTransactions {
+      id
+      description
+      amount
+      date
+      category
+    }
+  }
+`;
+
+const DELETE_TRANSACTION = gql`
+  mutation DeleteTransaction($id: ID!) {
+    deleteTransaction(id: $id) {
+      id
+    }
   }
 `;
 
 const Dashboard = () => {
-  const { data, loading, error } = useQuery(GET_FINANCE_SUMMARY);
+  const { data, loading, error, refetch } = useQuery(GET_FINANCE_SUMMARY);
+  const [deleteTransaction] = useMutation(DELETE_TRANSACTION, {
+    onCompleted: () => refetch(), // Refetch the query after deletion
+  });
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const { balance = 0, totalIncome = 0, totalExpenses = 0,category = [] } = data?.financeSummary || {};
+  const { balance = 0, totalIncome = 0, totalExpenses = 0, category = [] } = data?.financeSummary || {};
+  const transactions = data?.getAllTransactions || [];
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
@@ -35,8 +55,24 @@ const Dashboard = () => {
     navigate('/transaction');
   };
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const filteredTransactions = selectedCategory
+    ? transactions.filter(transaction => transaction.category === selectedCategory)
+    : transactions;
+
+  const handleEdit = (id) => {
+    navigate(`/edit-transaction/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteTransaction({ variables: { id } });
+    } catch (error) {
+      console.error("Error deleting transaction:", error.message);
+    }
   };
 
   return (
@@ -54,18 +90,25 @@ const Dashboard = () => {
           <p>Total Balance: ${balance.toFixed(2)}</p>
           <p>Income: ${totalIncome.toFixed(2)}</p>
           <p>Expenses: ${totalExpenses.toFixed(2)}</p>
-          <p>category: {category.map(item=>item+" ")}</p>
+          <p>Categories: {category.map(item => item + ' ')}</p>
         </div>
         <div className="dashboard-search">
-          <input
-            type="text"
-            placeholder="Search transactions..."
-            value={search}
-            onChange={handleSearchChange}
+          <select
+            value={selectedCategory}
+            onChange={handleCategoryChange}
             className="search-input"
-          />
+          >
+            <option value="">All Categories</option>
+            {category.map((cat, index) => (
+              <option key={index} value={cat}>{cat}</option>
+            ))}
+          </select>
         </div>
-        <Transactions />  {/* Ensure Transactions component is included */}
+        <Transactions
+          transactions={filteredTransactions}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />  {/* Pass edit and delete handlers */}
       </div>
     </div>
   );
