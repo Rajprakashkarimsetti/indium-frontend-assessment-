@@ -9,12 +9,13 @@ const resolvers = {
         }
     },
     Mutation: {
-        createTransaction: async (_, { amount, description, date }) => {
+        createTransaction: async (_, { amount, description, date, category}) => {
             const newTransaction = {
                 id: Date.now().toString(), // Generating a unique ID
                 amount,
                 description,
-                date
+                date,
+                category
             };
             // Save the new transaction and return it
             return inMemoryDB.saveTransaction(newTransaction);

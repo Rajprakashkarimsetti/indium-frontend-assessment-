@@ -1,5 +1,5 @@
 class Transaction {
-  constructor(id, title, category, amount, date) {
+  constructor(id, title, category, amount, dat) {
     this.id = id;
     this.title = title;
     this.category = category;

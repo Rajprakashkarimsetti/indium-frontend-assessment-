@@ -13,7 +13,7 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): AuthPayload
     register(name: String!, email: String!, password: String!): AuthPayload
-    createTransaction(amount: Float!, description: String!, date: String!): Transaction
+    createTransaction(amount: Float!,category: String!, description: String!, date: String!): Transaction
   }
 
   type AuthPayload {
@@ -30,6 +30,7 @@ const typeDefs = gql`
   type Transaction {
     id: ID!
     amount: Float!
+    category: String!
     description: String!
     date: String!
   }

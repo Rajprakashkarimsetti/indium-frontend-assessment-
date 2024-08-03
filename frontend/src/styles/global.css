@@ -230,3 +230,112 @@ html, body {
   margin: 5px 0;
 }
 
+.dashboard-search {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.transactions-list {
+  margin-top: 20px;
+}
+
+.transactions-list h2 {
+  margin-bottom: 10px;
+}
+
+.transactions-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.transactions-list li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.transactions-list li p {
+  margin: 5px 0;
+}
+
+
+/* src/styles/global.css */
+
+.dashboard-search {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.dashboard-search input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* src/styles/global.css */
+
+.dashboard-container {
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-controls .dashboard-button {
+  margin: 0 10px;
+}
+
+.dashboard-content {
+  margin-top: 20px;
+}
+
+.dashboard-search {
+  margin: 20px 0;
+}
+
+.transaction-list {
+  margin-top: 20px;
+}
+
+.transaction-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.transaction-list li {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.dashboard-search {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
