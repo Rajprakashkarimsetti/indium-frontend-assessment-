@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 // In-memory user store
 const users = [];
-const transactions = [];
+let transactions = []; // Changed from const to let
 
 // Replace 'your_jwt_secret' with an environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
@@ -68,13 +68,20 @@ const getAllTransactions = () => {
 };
 
 const getTransactions = () => {
-    return transactions;
+  return transactions;
 };
 
+// Fixed function to delete a transaction by ID
+const deleteTransaction = (id) => {
+  const initialLength = transactions.length;
+  transactions = transactions.filter(transaction => transaction.id !== id);
+  return transactions.length < initialLength;
+};
 
 module.exports = {
   saveTransaction,
   getAllTransactions,
   authResolvers,
-  getTransactions
+  getTransactions,
+  deleteTransaction // Export the new function
 };

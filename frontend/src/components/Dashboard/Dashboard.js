@@ -1,10 +1,10 @@
 // src/components/Dashboard/Dashboard.js
 import React, { useState } from 'react';
-import { useQuery, useMutation, gql } from '@apollo/client'; // Import useMutation
+import { useQuery, useMutation, gql } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import Transactions from './Transactions'; // Ensure the path is correct
-import '../../styles/global.css'; // Import global styles
-import '../../styles/variables.css'; // Import variable styles
+import Transactions from './Transactions';
+import '../../styles/global.css';
+import '../../styles/variables.css';
 
 const GET_FINANCE_SUMMARY = gql`
   query GetFinanceSummary {
@@ -35,10 +35,11 @@ const DELETE_TRANSACTION = gql`
 const Dashboard = () => {
   const { data, loading, error, refetch } = useQuery(GET_FINANCE_SUMMARY);
   const [deleteTransaction] = useMutation(DELETE_TRANSACTION, {
-    onCompleted: () => refetch(), // Refetch the query after deletion
+    onCompleted: () => refetch(),
   });
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -59,9 +60,15 @@ const Dashboard = () => {
     setSelectedCategory(event.target.value);
   };
 
-  const filteredTransactions = selectedCategory
-    ? transactions.filter(transaction => transaction.category === selectedCategory)
-    : transactions;
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
+  };
+
+  const filteredTransactions = transactions
+    .filter(transaction =>
+      (selectedCategory ? transaction.category === selectedCategory : true) &&
+      (searchTerm ? transaction.description.toLowerCase().includes(searchTerm) : true)
+    );
 
   const handleEdit = (id) => {
     navigate(`/edit-transaction/${id}`);
@@ -70,8 +77,10 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       await deleteTransaction({ variables: { id } });
+      alert('Transaction deleted successfully');
     } catch (error) {
       console.error("Error deleting transaction:", error.message);
+      alert('Failed to delete transaction');
     }
   };
 
@@ -93,6 +102,13 @@ const Dashboard = () => {
           <p>Categories: {category.map(item => item + ' ')}</p>
         </div>
         <div className="dashboard-search">
+          <input
+            type="text"
+            placeholder="Search by description..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
           <select
             value={selectedCategory}
             onChange={handleCategoryChange}
@@ -108,7 +124,7 @@ const Dashboard = () => {
           transactions={filteredTransactions}
           onEdit={handleEdit}
           onDelete={handleDelete}
-        />  {/* Pass edit and delete handlers */}
+        />
       </div>
     </div>
   );

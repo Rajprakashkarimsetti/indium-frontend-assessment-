@@ -56,7 +56,8 @@ const TransactionForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
+      <div class="container">
+      <div class="centered-div">
         <label>Amount:</label>
         <input
           type="number"
@@ -95,6 +96,7 @@ const TransactionForm = () => {
       </div>
       <button type="submit" disabled={loading}>Save</button>
       {error && <p>Error adding transaction: {error.message}</p>}
+      </div>
     </form>
   );
 };

@@ -1,4 +1,3 @@
-// src/graphql/resolvers/transactionResolvers.js
 const inMemoryDB = require('../../data/inMemoryDB');
 
 const resolvers = {
@@ -9,7 +8,7 @@ const resolvers = {
         }
     },
     Mutation: {
-        createTransaction: async (_, { amount, description, date, category}) => {
+        createTransaction: async (_, { amount, description, date, category }) => {
             const newTransaction = {
                 id: Date.now().toString(), // Generating a unique ID
                 amount,
@@ -19,6 +18,13 @@ const resolvers = {
             };
             // Save the new transaction and return it
             return inMemoryDB.saveTransaction(newTransaction);
+        },
+        deleteTransaction: async (_, { id }) => {
+            const success = inMemoryDB.deleteTransaction(id);
+            if (!success) {
+                throw new Error('Transaction not found');
+            }
+            return { id };
         }
     }
 };
