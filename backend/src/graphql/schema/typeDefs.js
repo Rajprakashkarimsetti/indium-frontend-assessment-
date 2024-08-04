@@ -15,6 +15,7 @@ const typeDefs = gql`
     register(name: String!, email: String!, password: String!): AuthPayload
     createTransaction(amount: Float!, category: String!, description: String!, date: String!): Transaction
     deleteTransaction(id: ID!): TransactionResponse
+    updateTransaction(id: ID!, amount: Float, category: String, description: String, date: String): Transaction
   }
 
   type AuthPayload {

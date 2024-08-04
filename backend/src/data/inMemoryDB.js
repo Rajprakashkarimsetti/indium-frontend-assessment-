@@ -78,10 +78,29 @@ const deleteTransaction = (id) => {
   return transactions.length < initialLength;
 };
 
+const updateTransaction = ({ id, amount, description, date, category }) => {
+  const transactionIndex = transactions.findIndex(t => t.id === id);
+  if (transactionIndex === -1) {
+    throw new Error('Transaction not found');
+  }
+  
+  const updatedTransaction = {
+    ...transactions[transactionIndex],
+    ...(amount !== undefined && { amount }),
+    ...(description !== undefined && { description }),
+    ...(date !== undefined && { date }),
+    ...(category !== undefined && { category }),
+  };
+  
+  transactions[transactionIndex] = updatedTransaction;
+  return updatedTransaction;
+};
+
 module.exports = {
   saveTransaction,
   getAllTransactions,
   authResolvers,
   getTransactions,
-  deleteTransaction // Export the new function
+  deleteTransaction,
+  updateTransaction,
 };

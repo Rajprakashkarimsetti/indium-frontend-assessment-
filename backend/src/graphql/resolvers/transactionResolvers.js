@@ -25,6 +25,10 @@ const resolvers = {
                 throw new Error('Transaction not found');
             }
             return { id };
+        },
+        updateTransaction: async (_, { id, amount, description, date, category }) => {
+            // Update the transaction and return it
+            return inMemoryDB.updateTransaction({ id, amount, description, date, category });
         }
     }
 };
