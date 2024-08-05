@@ -71,6 +71,10 @@ const getTransactions = () => {
   return transactions;
 };
 
+const getTransactionById = (id) => {
+  return transactions.find(transaction => transaction.id === id);
+};
+
 // Fixed function to delete a transaction by ID
 const deleteTransaction = (id) => {
   const initialLength = transactions.length;
@@ -103,4 +107,5 @@ module.exports = {
   getTransactions,
   deleteTransaction,
   updateTransaction,
+  getTransactionById,
 };

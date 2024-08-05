@@ -396,14 +396,15 @@ html, body {
 
 .container {
   display: flex;
-  justify-content: center; /* Horizontally center */
+  flex-direction:column;
+  justify-content: space-around; /* Horizontally center */
   align-items: center;     /* Vertically center */
-  height: 100vh;           /* Full viewport height */
+  height: 50vh;           /* Full viewport height */
 }
 
 .centered-div {
-  /* Optional styles for the centered div */
+  display: flex;
   padding: 20px;
   border: 1px solid #ddd;
-  background-color: #f4f4f4;
+
 }

@@ -8,6 +8,7 @@ const typeDefs = gql`
     getUser(id: ID!): User
     getAllTransactions: [Transaction]
     financeSummary: FinanceSummary
+    getTransactionById(id: ID!): Transaction
   }
 
   type Mutation {
@@ -16,6 +17,7 @@ const typeDefs = gql`
     createTransaction(amount: Float!, category: String!, description: String!, date: String!): Transaction
     deleteTransaction(id: ID!): TransactionResponse
     updateTransaction(id: ID!, amount: Float, category: String, description: String, date: String): Transaction
+    getTransactionById(id:ID!): Transaction
   }
 
   type AuthPayload {

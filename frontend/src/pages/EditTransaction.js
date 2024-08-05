@@ -4,8 +4,8 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const GET_TRANSACTION = gql`
-  query GetTransaction($id: ID!) {
-    transaction(id: $id) {
+  query getTransactionById($id: ID!) {
+    getTransactionById(id: $id) {
       id
       description
       amount
@@ -35,19 +35,19 @@ const EditTransactionPage = () => {
 
   const [formData, setFormData] = useState({
     description: '',
-    amount: '',
+    amount: 0,
     date: '',
     category: ''
   });
 
   useEffect(() => {
     if (data) {
-      const { transaction } = data;
+      const { getTransactionById } = data;
       setFormData({
-        description: transaction.description,
-        amount: transaction.amount,
-        date: transaction.date,
-        category: transaction.category
+        description: getTransactionById.description,
+        amount: getTransactionById.amount,
+        date: getTransactionById.date,
+        category: getTransactionById.category
       });
     }
   }, [data]);
@@ -56,6 +56,12 @@ const EditTransactionPage = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  const handleFloatChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: parseFloat(value) });
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +96,7 @@ const EditTransactionPage = () => {
             type="number"
             name="amount"
             value={formData.amount}
-            onChange={handleChange}
+            onChange={handleFloatChange}
             required
           />
         </div>

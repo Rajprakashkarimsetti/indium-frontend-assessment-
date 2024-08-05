@@ -5,6 +5,9 @@ const resolvers = {
         getAllTransactions: async () => {
             // Fetch all transactions from the in-memory database
             return inMemoryDB.getTransactions();
+        },
+        getTransactionById: async (_, { id }) => {
+            return inMemoryDB.getTransactionById(id);
         }
     },
     Mutation: {
@@ -27,7 +30,6 @@ const resolvers = {
             return { id };
         },
         updateTransaction: async (_, { id, amount, description, date, category }) => {
-            // Update the transaction and return it
             return inMemoryDB.updateTransaction({ id, amount, description, date, category });
         }
     }

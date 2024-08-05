@@ -1,6 +1,7 @@
 // src/components/Dashboard/Transactions.js
 import React from 'react';
 import { useMutation, gql } from '@apollo/client';
+import {useNavigate } from 'react-router-dom';
 
 const DELETE_TRANSACTION_MUTATION = gql`
   mutation DeleteTransaction($id: ID!) {
@@ -65,7 +66,6 @@ const deleteButtonStyles = {
 const Transactions = ({ transactions, onEdit }) => {
   const [deleteTransaction] = useMutation(DELETE_TRANSACTION_MUTATION, {
     update(cache, { data: { deleteTransaction } }) {
-      // Update cache after deletion
       const { getAllTransactions } = cache.readQuery({ query: GET_ALL_TRANSACTIONS_QUERY });
       cache.writeQuery({
         query: GET_ALL_TRANSACTIONS_QUERY,
@@ -87,6 +87,12 @@ const Transactions = ({ transactions, onEdit }) => {
       alert('Failed to delete transaction');
     }
   };
+
+  const navigate = useNavigate();
+
+  const handleEdit = (id) =>{
+    navigate ("/edit-transaction/"+id)
+  }
   
 
   return (
@@ -115,8 +121,7 @@ const Transactions = ({ transactions, onEdit }) => {
                 <td style={tdStyles}>
                   <button
                     style={editButtonStyles}
-                    onClick={() => onEdit(transaction.id)}
-                  >
+                    onClick={() => handleEdit(transaction.id)}>
                     Edit
                   </button>
                   <button

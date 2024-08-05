@@ -57,16 +57,7 @@ const TransactionForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div class="container">
-      <div class="centered-div">
-        <label>Amount:</label>
-        <input
-          type="number"
-          step="0.01"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
-      </div>
+      
       <div>
         <label>Description:</label>
         <input
@@ -77,11 +68,12 @@ const TransactionForm = () => {
         />
       </div>
       <div>
-        <label>Date:</label>
+        <label>Amount:</label>
         <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          type="number"
+          step="0.01"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
           required
         />
       </div>
@@ -91,6 +83,15 @@ const TransactionForm = () => {
           type="text"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label>Date:</label>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
           required
         />
       </div>
