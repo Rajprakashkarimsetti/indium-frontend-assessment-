@@ -1,7 +1,7 @@
 // src/components/Dashboard/Transactions.js
 import React from 'react';
 import { useMutation, gql } from '@apollo/client';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const DELETE_TRANSACTION_MUTATION = gql`
   mutation DeleteTransaction($id: ID!) {
@@ -19,6 +19,7 @@ const GET_ALL_TRANSACTIONS_QUERY = gql`
       description
       date
       category
+      type
     }
   }
 `;
@@ -67,6 +68,7 @@ const Transactions = ({ transactions, onEdit }) => {
   const [deleteTransaction] = useMutation(DELETE_TRANSACTION_MUTATION, {
     update(cache, { data: { deleteTransaction } }) {
       const { getAllTransactions } = cache.readQuery({ query: GET_ALL_TRANSACTIONS_QUERY });
+      console.log('Cache before update:', getAllTransactions);
       cache.writeQuery({
         query: GET_ALL_TRANSACTIONS_QUERY,
         data: {
@@ -75,6 +77,7 @@ const Transactions = ({ transactions, onEdit }) => {
           ),
         },
       });
+      console.log('Cache after update:', cache.readQuery({ query: GET_ALL_TRANSACTIONS_QUERY }));
     },
   });
 
@@ -90,10 +93,12 @@ const Transactions = ({ transactions, onEdit }) => {
 
   const navigate = useNavigate();
 
-  const handleEdit = (id) =>{
-    navigate ("/edit-transaction/"+id)
-  }
-  
+  const handleEdit = (id) => {
+    navigate(`/edit-transaction/${id}`);
+  };
+
+  // Debugging: Log the transactions data
+  console.log('Transactions:', transactions);
 
   return (
     <div className="transactions-list">
@@ -108,6 +113,7 @@ const Transactions = ({ transactions, onEdit }) => {
               <th style={thStyles}>Amount</th>
               <th style={thStyles}>Date</th>
               <th style={thStyles}>Category</th>
+              <th style={thStyles}>Type</th>
               <th style={thStyles}>Actions</th>
             </tr>
           </thead>
@@ -118,15 +124,18 @@ const Transactions = ({ transactions, onEdit }) => {
                 <td style={tdStyles}>${transaction.amount.toFixed(2)}</td>
                 <td style={tdStyles}>{transaction.date}</td>
                 <td style={tdStyles}>{transaction.category}</td>
+                <td style={tdStyles}>{transaction.type || 'N/A'}</td>
                 <td style={tdStyles}>
                   <button
                     style={editButtonStyles}
-                    onClick={() => handleEdit(transaction.id)}>
+                    onClick={() => handleEdit(transaction.id)}
+                  >
                     Edit
                   </button>
                   <button
                     style={deleteButtonStyles}
-                    onClick={() => handleDelete(transaction.id)}>
+                    onClick={() => handleDelete(transaction.id)}
+                  >
                     Delete
                   </button>
                 </td>

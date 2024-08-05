@@ -11,18 +11,20 @@ const GET_TRANSACTION = gql`
       amount
       date
       category
+      type
     }
   }
 `;
 
 const UPDATE_TRANSACTION = gql`
-  mutation UpdateTransaction($id: ID!, $description: String!, $amount: Float!, $date: String!, $category: String!) {
-    updateTransaction(id: $id, description: $description, amount: $amount, date: $date, category: $category) {
+  mutation UpdateTransaction($id: ID!, $description: String!, $amount: Float!, $date: String!, $category: String!, $type: TransactionType!) {
+    updateTransaction(id: $id, description: $description, amount: $amount, date: $date, category: $category, type: $type) {
       id
       description
       amount
       date
       category
+      type
     }
   }
 `;
@@ -37,7 +39,8 @@ const EditTransactionPage = () => {
     description: '',
     amount: 0,
     date: '',
-    category: ''
+    category: '',
+    type: 'INCOME' // Default to 'INCOME'
   });
 
   useEffect(() => {
@@ -47,7 +50,8 @@ const EditTransactionPage = () => {
         description: getTransactionById.description,
         amount: getTransactionById.amount,
         date: getTransactionById.date,
-        category: getTransactionById.category
+        category: getTransactionById.category,
+        type: getTransactionById.type
       });
     }
   }, [data]);
@@ -62,7 +66,6 @@ const EditTransactionPage = () => {
     setFormData({ ...formData, [name]: parseFloat(value) });
   };
   
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -77,7 +80,7 @@ const EditTransactionPage = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div>
+    <div className="edit-transaction">
       <h2>Edit Transaction</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -119,6 +122,18 @@ const EditTransactionPage = () => {
             onChange={handleChange}
             required
           />
+        </div>
+        <div>
+          <label>Type:</label>
+          <select
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            required
+          >
+            <option value="INCOME">Income</option>
+            <option value="EXPENSE">Expense</option>
+          </select>
         </div>
         <button type="submit">Update Transaction</button>
       </form>

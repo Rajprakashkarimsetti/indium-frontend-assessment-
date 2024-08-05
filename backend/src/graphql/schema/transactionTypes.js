@@ -1,12 +1,18 @@
 const { gql } = require('apollo-server-express');
 
 const transactionTypes = gql`
+  enum TransactionType {
+    INCOME
+    EXPENSE
+  }
+
   type Transaction {
     id: ID!
     title: String!
     category: String!
     amount: Float!
     date: String!
+    type: TransactionType!
   }
 
   type Query {
@@ -15,8 +21,9 @@ const transactionTypes = gql`
   }
 
   type Mutation {
-    addTransaction(title: String!, category: String!, amount: Float!, date: String!): Transaction!
+    addTransaction(amount: Float!, description: String!, date: String!, category: String!, type: TransactionType!): Transaction!
     deleteTransaction(id: ID!): Transaction!
+    updateTransaction(id: ID!, amount: Float!, description: String!, date: String!, category: String!, type: TransactionType!): Transaction!
   }
 `;
 

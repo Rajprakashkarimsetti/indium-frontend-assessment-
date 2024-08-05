@@ -1,9 +1,11 @@
 const { gql } = require('apollo-server-express');
-const authTypes = require('./authTypes');
-const financeTypes = require('./financeTypes');
-const transactionTypes = require('./transactionTypes');
 
 const typeDefs = gql`
+  enum TransactionType {
+    INCOME
+    EXPENSE
+  }
+
   type Query {
     getUser(id: ID!): User
     getAllTransactions: [Transaction]
@@ -14,10 +16,10 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): AuthPayload
     register(name: String!, email: String!, password: String!): AuthPayload
-    createTransaction(amount: Float!, category: String!, description: String!, date: String!): Transaction
+    createTransaction(amount: Float!, category: String!, description: String!, date: String!, type: TransactionType!): Transaction
     deleteTransaction(id: ID!): TransactionResponse
-    updateTransaction(id: ID!, amount: Float, category: String, description: String, date: String): Transaction
-    getTransactionById(id:ID!): Transaction
+    updateTransaction(id: ID!, amount: Float, category: String, description: String, date: String, type: TransactionType): Transaction
+    getTransactionById(id: ID!): Transaction
   }
 
   type AuthPayload {
@@ -37,6 +39,7 @@ const typeDefs = gql`
     category: String!
     description: String!
     date: String!
+    type: TransactionType!
   }
 
   type FinanceSummary {

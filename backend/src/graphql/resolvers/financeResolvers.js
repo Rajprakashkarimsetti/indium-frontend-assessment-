@@ -9,15 +9,15 @@ const financeResolvers = {
       let totalIncome = 0;
       let totalExpenses = 0;
       let category = new Set();
-      console.log(transactions)
+      console.log(transactions);
       
       transactions.forEach(transaction => {
-        if (transaction.amount > 0) {
+        if (transaction.type === 'INCOME') {
           totalIncome += transaction.amount;
-        } else {
+        } else if (transaction.type === 'EXPENSE') {
           totalExpenses += Math.abs(transaction.amount);
         }
-        category.add(transaction.category)
+        category.add(transaction.category);
       });
 
       const balance = totalIncome - totalExpenses;
@@ -26,7 +26,7 @@ const financeResolvers = {
         totalIncome,
         totalExpenses,
         balance,
-        category,
+        category: Array.from(category), // Convert Set to Array
       };
     },
   },

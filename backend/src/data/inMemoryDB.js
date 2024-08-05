@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 // In-memory user store
 const users = [];
-let transactions = []; // Changed from const to let
+let transactions = []; 
 
 // Replace 'your_jwt_secret' with an environment variable
 const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
@@ -75,14 +75,13 @@ const getTransactionById = (id) => {
   return transactions.find(transaction => transaction.id === id);
 };
 
-// Fixed function to delete a transaction by ID
 const deleteTransaction = (id) => {
   const initialLength = transactions.length;
   transactions = transactions.filter(transaction => transaction.id !== id);
   return transactions.length < initialLength;
 };
 
-const updateTransaction = ({ id, amount, description, date, category }) => {
+const updateTransaction = ({ id, amount, description, date, category, type }) => {
   const transactionIndex = transactions.findIndex(t => t.id === id);
   if (transactionIndex === -1) {
     throw new Error('Transaction not found');
@@ -94,6 +93,7 @@ const updateTransaction = ({ id, amount, description, date, category }) => {
     ...(description !== undefined && { description }),
     ...(date !== undefined && { date }),
     ...(category !== undefined && { category }),
+    ...(type !== undefined && { type })
   };
   
   transactions[transactionIndex] = updatedTransaction;

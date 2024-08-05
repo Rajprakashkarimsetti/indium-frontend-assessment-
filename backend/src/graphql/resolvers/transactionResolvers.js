@@ -3,7 +3,6 @@ const inMemoryDB = require('../../data/inMemoryDB');
 const resolvers = {
     Query: {
         getAllTransactions: async () => {
-            // Fetch all transactions from the in-memory database
             return inMemoryDB.getTransactions();
         },
         getTransactionById: async (_, { id }) => {
@@ -11,13 +10,14 @@ const resolvers = {
         }
     },
     Mutation: {
-        createTransaction: async (_, { amount, description, date, category }) => {
+        createTransaction: async (_, { amount, description, date, category,type }) => {
             const newTransaction = {
-                id: Date.now().toString(), // Generating a unique ID
+                id: Date.now().toString(),
                 amount,
                 description,
                 date,
-                category
+                category,
+                type
             };
             // Save the new transaction and return it
             return inMemoryDB.saveTransaction(newTransaction);
@@ -29,8 +29,8 @@ const resolvers = {
             }
             return { id };
         },
-        updateTransaction: async (_, { id, amount, description, date, category }) => {
-            return inMemoryDB.updateTransaction({ id, amount, description, date, category });
+        updateTransaction: async (_, { id, amount, description, date, category,type }) => {
+            return inMemoryDB.updateTransaction({ id, amount, description, date, category,type });
         }
     }
 };
