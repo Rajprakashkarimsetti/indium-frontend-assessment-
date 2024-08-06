@@ -9,10 +9,10 @@ describe('Finance Resolvers', () => {
     it('should return correct summary for a list of transactions', () => {
       // Mock data
       const transactions = [
-        { amount: 100, category: 'Salary' },
-        { amount: -50, category: 'Groceries' },
-        { amount: 200, category: 'Freelance' },
-        { amount: -30, category: 'Utilities' },
+        { amount: 100, type: 'INCOME', category: 'Salary' },
+        { amount: -50, type: 'EXPENSE', category: 'Groceries' },
+        { amount: 200, type: 'INCOME', category: 'Freelance' },
+        { amount: -30, type: 'EXPENSE', category: 'Utilities' },
       ];
       
       // Mock implementation
@@ -23,7 +23,7 @@ describe('Finance Resolvers', () => {
         totalIncome: 300,
         totalExpenses: 80,
         balance: 220,
-        category: new Set(['Salary', 'Groceries', 'Freelance', 'Utilities']),
+        category: ['Salary', 'Groceries', 'Freelance', 'Utilities'], // Converted Set to Array
       };
 
       // Call resolver
@@ -42,7 +42,7 @@ describe('Finance Resolvers', () => {
         totalIncome: 0,
         totalExpenses: 0,
         balance: 0,
-        category: new Set(),
+        category: [], // Converted Set to Array
       };
 
       // Call resolver
@@ -55,8 +55,8 @@ describe('Finance Resolvers', () => {
     it('should handle transactions with only positive amounts', () => {
       // Mock data
       const transactions = [
-        { amount: 100, category: 'Salary' },
-        { amount: 200, category: 'Freelance' },
+        { amount: 100, type: 'INCOME', category: 'Salary' },
+        { amount: 200, type: 'INCOME', category: 'Freelance' },
       ];
 
       // Mock implementation
@@ -67,7 +67,7 @@ describe('Finance Resolvers', () => {
         totalIncome: 300,
         totalExpenses: 0,
         balance: 300,
-        category: new Set(['Salary', 'Freelance']),
+        category: ['Salary', 'Freelance'], // Converted Set to Array
       };
 
       // Call resolver
@@ -80,8 +80,8 @@ describe('Finance Resolvers', () => {
     it('should handle transactions with only negative amounts', () => {
       // Mock data
       const transactions = [
-        { amount: -50, category: 'Groceries' },
-        { amount: -30, category: 'Utilities' },
+        { amount: -50, type: 'EXPENSE', category: 'Groceries' },
+        { amount: -30, type: 'EXPENSE', category: 'Utilities' },
       ];
 
       // Mock implementation
@@ -92,7 +92,7 @@ describe('Finance Resolvers', () => {
         totalIncome: 0,
         totalExpenses: 80,
         balance: -80,
-        category: new Set(['Groceries', 'Utilities']),
+        category: ['Groceries', 'Utilities'], // Converted Set to Array
       };
 
       // Call resolver

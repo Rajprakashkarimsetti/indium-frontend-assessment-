@@ -1,12 +1,13 @@
 // src/graphql/schema/typeDefs.test.js
 const { buildSchema, parse, validate } = require('graphql');
+const { gql } = require('apollo-server-express');
 const typeDefs = require('./typeDefs');
 
-// Build schema from the typeDefs file
+// Create schema from the type definitions
 const schema = buildSchema(typeDefs.loc.source.body);
 
 // Sample queries and mutations for testing
-const queries = `
+const queries = gql`
   query {
     getUser(id: "1") {
       id
@@ -19,6 +20,7 @@ const queries = `
       category
       description
       date
+      type
     }
     financeSummary {
       totalIncome
@@ -32,11 +34,12 @@ const queries = `
       category
       description
       date
+      type
     }
   }
 `;
 
-const mutations = `
+const mutations = gql`
   mutation {
     login(email: "test@example.com", password: "password") {
       token
@@ -54,22 +57,24 @@ const mutations = `
         email
       }
     }
-    createTransaction(amount: 100.0, category: "Salary", description: "Monthly Salary", date: "2024-08-01") {
+    createTransaction(amount: 100.0, category: "Salary", description: "Monthly Salary", date: "2024-08-01", type: INCOME) {
       id
       amount
       category
       description
       date
+      type
     }
     deleteTransaction(id: "1") {
       id
     }
-    updateTransaction(id: "1", amount: 150.0, category: "Bonus", description: "Yearly Bonus", date: "2024-12-31") {
+    updateTransaction(id: "1", amount: 150.0, category: "Bonus", description: "Yearly Bonus", date: "2024-12-31", type: INCOME) {
       id
       amount
       category
       description
       date
+      type
     }
     getTransactionById(id: "1") {
       id
@@ -77,6 +82,7 @@ const mutations = `
       category
       description
       date
+      type
     }
   }
 `;
@@ -140,6 +146,7 @@ describe('TypeDefs Schema', () => {
     expect(fields).toHaveProperty('category');
     expect(fields).toHaveProperty('description');
     expect(fields).toHaveProperty('date');
+    expect(fields).toHaveProperty('type');
   });
 
   it('should define FinanceSummary type with correct fields', () => {
@@ -164,8 +171,8 @@ describe('TypeDefs Schema', () => {
   });
 
   it('should validate the Query and Mutation definitions', () => {
-    const queryAst = parse(queries);
-    const mutationAst = parse(mutations);
+    const queryAst = parse(queries.loc.source.body);
+    const mutationAst = parse(mutations.loc.source.body);
 
     const queryValidation = validate(schema, queryAst);
     const mutationValidation = validate(schema, mutationAst);

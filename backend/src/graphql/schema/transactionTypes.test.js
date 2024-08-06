@@ -1,9 +1,9 @@
-// src/graphql/schema/transactionTypes.test.js
-const { buildSchema, parse, validate } = require('graphql');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+const { parse, validate } = require('graphql');
 const transactionTypes = require('./transactionTypes');
 
 // Build schema from the transactionTypes file
-const schema = buildSchema(transactionTypes.loc.source.body);
+const schema = makeExecutableSchema({ typeDefs: transactionTypes });
 
 // Sample queries and mutations for testing
 const queries = `
@@ -27,7 +27,7 @@ const queries = `
 
 const mutations = `
   mutation {
-    addTransaction(title: "Groceries", category: "Food", amount: 50.0, date: "2024-08-01") {
+    addTransaction(amount: 50.0, description: "Groceries", date: "2024-08-01", category: "Food", type: INCOME) {
       id
       title
       category
