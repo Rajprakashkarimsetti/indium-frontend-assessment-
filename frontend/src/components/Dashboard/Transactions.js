@@ -1,35 +1,16 @@
 import React from 'react';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/global.css';
+import {  DELETE_TRANSACTION,GET_TRANSACTIONS} from '../../graphql';
 
-const DELETE_TRANSACTION_MUTATION = gql`
-  mutation DeleteTransaction($id: ID!) {
-    deleteTransaction(id: $id) {
-      id
-    }
-  }
-`;
 
-const GET_ALL_TRANSACTIONS_QUERY = gql`
-  query GetAllTransactions {
-    getAllTransactions {
-      id
-      amount
-      description
-      date
-      category
-      type
-    }
-  }
-`;
-
-const Transactions = ({ transactions, onEdit }) => {
-  const [deleteTransaction] = useMutation(DELETE_TRANSACTION_MUTATION, {
+const Transactions = ({ transactions }) => {
+  const [deleteTransaction] = useMutation(DELETE_TRANSACTION, {
     update(cache, { data: { deleteTransaction } }) {
-      const { getAllTransactions } = cache.readQuery({ query: GET_ALL_TRANSACTIONS_QUERY });
+      const { getAllTransactions } = cache.readQuery({ query:GET_TRANSACTIONS});
       cache.writeQuery({
-        query: GET_ALL_TRANSACTIONS_QUERY,
+        query: GET_TRANSACTIONS,
         data: {
           getAllTransactions: getAllTransactions.filter(
             transaction => transaction.id !== deleteTransaction.id
@@ -38,25 +19,27 @@ const Transactions = ({ transactions, onEdit }) => {
       });
     },
   });
+  
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteTransaction({ variables: { id } });
-      alert('Transaction deleted successfully');
-    } catch (error) {
-      console.error('Error deleting transaction:', error);
-      alert('Failed to delete transaction');
+
+  const onDeleteTransaction = async (id) => {
+    const confirmed = window.confirm("Do you want to delete this transaction?");
+    const userId = localStorage.getItem('userId');
+    if (confirmed) {
+      try {
+        await deleteTransaction({ variables: { userId, id } });
+      } catch (error) {
+        console.error('Error deleting transaction:', error);
+      }
     }
   };
+  
 
   const navigate = useNavigate();
 
   const handleEdit = (id) => {
     navigate(`/edit-transaction/${id}`);
   };
-
-  // Debugging: Log the transactions data
-  console.log('Transactions:', transactions);
 
   return (
     <div className="transactions-list">
@@ -70,8 +53,6 @@ const Transactions = ({ transactions, onEdit }) => {
               <th>Description</th>
               <th>Amount</th>
               <th>Date</th>
-              <th>Category</th>
-              <th>Type</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -81,8 +62,6 @@ const Transactions = ({ transactions, onEdit }) => {
                 <td>{transaction.description}</td>
                 <td>${transaction.amount.toFixed(2)}</td>
                 <td>{transaction.date}</td>
-                <td>{transaction.category}</td>
-                <td>{transaction.type ? transaction.type : 'N/A'}</td>
                 <td>
                   <button
                     className="edit-button"
@@ -90,12 +69,7 @@ const Transactions = ({ transactions, onEdit }) => {
                   >
                     Edit
                   </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDelete(transaction.id)}
-                  >
-                    Delete
-                  </button>
+                  <button className = "delete-button" onClick={() => onDeleteTransaction(transaction.id)}>Delete</button>
                 </td>
               </tr>
             ))}

@@ -1,138 +1,84 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { gql, useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import client from '../../apollo/client';
+import './Login.css'; // Import the new CSS file
+
+const LOGIN_USER = gql`
+  mutation Login($identifier: String!, $password: String!) {
+    login(identifier: $identifier, password: $password) {
+      accessToken
+      refreshToken
+      username
+      userId
+    }
+  }
+`;
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await loginUser({ variables: { identifier, password } });
+      if (data && data.login) {
+        localStorage.setItem('token', data.login.accessToken);
+        localStorage.setItem('refreshToken', data.login.refreshToken);
+        localStorage.setItem('username', data.login.username);
+        localStorage.setItem('userId', data.login.userId);
+        await client.resetStore();
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Login failed:', err.message);
+      alert(`Login failed: ${err.message}`);
+    }
+  };
 
-        try {
-            const response = await fetch('http://localhost:4000/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query: `
-                        mutation {
-                            login(email: "${email}", password: "${password}") {
-                                token
-                            }
-                        }
-                    `,
-                }),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                localStorage.setItem('authToken', result.data.login.token);
-                navigate('/dashboard'); // Redirect to dashboard
-            } else {
-                setError('Login failed. Please check your credentials.');
-            }
-        } catch (err) {
-            console.error(err);
-            setError('An error occurred. Please try again.');
-        }
-    };
-
-    return (
-        <div style={styles.container}>
-            <h2 style={styles.header}>Login</h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.formGroup}>
-                    <label htmlFor="email" style={styles.label}>Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="password" style={styles.label}>Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        style={styles.input}
-                    />
-                </div>
-                {error && <p style={styles.errorText}>{error}</p>}
-                <button type="submit" style={styles.button}>Login</button>
-            </form>
-            <div style={styles.registerLink}>
-                <p>Don't have an account?</p>
-                <Link to="/register" style={styles.link}>Register here</Link>
-            </div>
+  return (
+    <div className="login-container">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="identifier">Username or Email:</label>
+          <input 
+            id="identifier"
+            type="text" 
+            value={identifier} 
+            onChange={(e) => setIdentifier(e.target.value)} 
+            required 
+            className="form-control"
+          />
         </div>
-    );
-};
-
-const styles = {
-    container: {
-        maxWidth: '400px',
-        margin: 'auto',
-        padding: '20px',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-    },
-    header: {
-        textAlign: 'center',
-        marginBottom: '20px',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    formGroup: {
-        marginBottom: '15px',
-    },
-    label: {
-        display: 'block',
-        marginBottom: '5px',
-    },
-    input: {
-        width: '100%',
-        padding: '8px',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-    },
-    button: {
-        backgroundColor: '#28a745',
-        color: '#fff',
-        border: 'none',
-        padding: '10px 15px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    },
-    buttonHover: {
-        backgroundColor: '#218838',
-    },
-    errorText: {
-        color: '#dc3545',
-    },
-    registerLink: {
-        marginTop: '15px',
-        textAlign: 'center',
-    },
-    link: {
-        color: '#007bff',
-        textDecoration: 'none',
-    },
-    linkHover: {
-        textDecoration: 'underline',
-    },
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input 
+            id="password"
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            required 
+            className="form-control"
+          />
+        </div>
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className="submit-button"
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+        {error && <p className="error-message">Error: {error.message}</p>}
+      </form>
+      <p className="register-link">
+        Don't have an account? <a href="/register">Register here</a>
+      </p>
+    </div>
+  );
 };
 
 export default Login;
