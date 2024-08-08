@@ -247,7 +247,7 @@
     {
       "id": "1723097491906",
       "description": "sample",
-      "amount": 90000,
+      "amount": 9000,
       "type": "income",
       "userId": "1722839300711",
       "date": "2024-08-08"
@@ -288,6 +288,14 @@
       "id": "1723099724371",
       "description": "sample 5",
       "amount": 10,
+      "type": "expense",
+      "userId": "1722839300711",
+      "date": "2024-08-08"
+    },
+    {
+      "id": "1723101787394",
+      "description": "sample 9",
+      "amount": 5,
       "type": "expense",
       "userId": "1722839300711",
       "date": "2024-08-08"
